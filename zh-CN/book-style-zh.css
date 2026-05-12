@@ -1,0 +1,182 @@
+/* Modern Java Book — Chinese Edition PDF Stylesheet */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Source+Code+Pro:wght@400;500&display=swap');
+
+/* Page setup */
+@page {
+  size: 8.5in 11in;
+  margin: 1in 1in 0.85in 1.1in;
+}
+
+/* Base typography — CJK-optimized */
+body {
+  font-family: 'Noto Serif SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', serif;
+  font-size: 11pt;
+  line-height: 1.8;
+  color: #1a1a2e;
+  max-width: 100%;
+}
+
+/* Headings */
+h1 {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 26pt;
+  font-weight: 700;
+  color: #0a3d62;
+  margin-top: 2.5em;
+  margin-bottom: 0.5em;
+  page-break-before: always;
+  border-bottom: 3px solid #0a3d62;
+  padding-bottom: 0.2em;
+}
+
+h1:first-of-type {
+  page-break-before: avoid;
+}
+
+h2 {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 17pt;
+  font-weight: 600;
+  color: #1565c0;
+  margin-top: 1.8em;
+  margin-bottom: 0.4em;
+  border-left: 4px solid #1565c0;
+  padding-left: 0.5em;
+}
+
+h3 {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 13pt;
+  font-weight: 600;
+  color: #0a3d62;
+  margin-top: 1.4em;
+  margin-bottom: 0.3em;
+}
+
+h4 {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 11pt;
+  font-weight: 600;
+  color: #333;
+  margin-top: 1em;
+}
+
+/* Part separators */
+h1[id*="part"], h1[id*="部分"] {
+  font-size: 30pt;
+  text-align: center;
+  color: #0a3d62;
+  border-bottom: none;
+  border-top: 3px solid #1565c0;
+  border-bottom: 3px solid #1565c0;
+  padding: 0.5em 0;
+  page-break-before: always;
+}
+
+/* Code blocks */
+pre {
+  background-color: #1e2a3a;
+  color: #e8f4f8;
+  border-radius: 6px;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+  font-size: 8.5pt;
+  line-height: 1.5;
+  page-break-inside: avoid;
+  margin: 1em 0 1.2em;
+  border-left: 4px solid #1565c0;
+}
+
+code {
+  font-family: 'Source Code Pro', 'Courier New', monospace;
+  font-size: 9pt;
+}
+
+pre code {
+  background: none;
+  color: inherit;
+  font-size: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Inline code */
+p code, li code, td code {
+  background-color: #e8f0fe;
+  color: #0d47a1;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 9pt;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0 1.5em;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+}
+
+th {
+  background-color: #0a3d62;
+  color: white;
+  font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #dde5f0;
+}
+
+tr:nth-child(even) td {
+  background-color: #f0f4ff;
+}
+
+/* Blockquotes (callouts) */
+blockquote {
+  border-left: 4px solid #1565c0;
+  background-color: #f0f4ff;
+  padding: 0.8em 1em;
+  margin: 1em 0;
+  font-style: normal;
+  color: #333;
+}
+
+/* Lists */
+ul, ol {
+  margin: 0.5em 0 0.8em 1.5em;
+  line-height: 1.8;
+}
+
+li {
+  margin-bottom: 0.2em;
+}
+
+/* Horizontal rules (chapter/section separators) */
+hr {
+  border: none;
+  border-top: 2px solid #1565c0;
+  margin: 2em 0;
+}
+
+/* Links */
+a {
+  color: #1565c0;
+}
+
+/* Header/Footer styling */
+.header {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 8pt;
+  color: #666;
+}
+
+.footer {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 9pt;
+  color: #444;
+}
