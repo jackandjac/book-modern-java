@@ -563,7 +563,7 @@ public class AccountCommandHandler {
     }
 }
 
-public record CommandResult(boolean success, String message) {
+public record CommandResult(boolean ok, String message) {
     public static CommandResult success() {
         return new CommandResult(true, "OK");
     }
@@ -644,18 +644,18 @@ Pattern matching is not limited to concrete classes. You can match against inter
 
 ```java
 public interface Serializable {}
+public interface Identifiable { String id(); }
 public interface Auditable { java.time.Instant lastModified(); }
-public abstract class BaseEntity implements Serializable {
-    public abstract String id();
-}
 
+// Records cannot extend classes — they can only implement interfaces.
+// Use interfaces to capture shared identity and audit contracts.
 public record Order(String id, java.math.BigDecimal total,
                     java.time.Instant lastModified)
-    extends BaseEntity implements Auditable {}
+    implements Identifiable, Auditable, Serializable {}
 
 public record Customer(String id, String name,
                        java.time.Instant lastModified)
-    extends BaseEntity implements Auditable {}
+    implements Identifiable, Auditable, Serializable {}
 
 public class AuditLogger {
 
@@ -666,7 +666,7 @@ public class AuditLogger {
     }
 
     public void logEntityInfo(Object obj) {
-        if (obj instanceof BaseEntity entity && obj instanceof Auditable auditable) {
+        if (obj instanceof Identifiable entity && obj instanceof Auditable auditable) {
             System.out.printf("Entity %s last modified %s%n",
                 entity.id(), auditable.lastModified());
         }

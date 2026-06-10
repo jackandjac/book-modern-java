@@ -44,7 +44,7 @@ The `throw` at the end is a runtime time bomb. The compiler has no idea whether 
 ## 2.2 Declaring Sealed Classes with the permits Clause
 
 ```java
-public sealed class Shape permits Circle, Rectangle, Triangle {
+public abstract sealed class Shape permits Circle, Rectangle, Triangle {
     public abstract double area();
     public abstract double perimeter();
 }
@@ -63,6 +63,8 @@ public final class Circle extends Shape {
         this.radius = radius;
     }
 
+    public double radius() { return radius; }
+
     @Override public double area() { return Math.PI * radius * radius; }
     @Override public double perimeter() { return 2 * Math.PI * radius; }
 }
@@ -77,12 +79,17 @@ public sealed class Rectangle extends Shape permits Square {
         this.height = height;
     }
 
+    public double width() { return width; }
+    public double height() { return height; }
+
     @Override public double area() { return width * height; }
     @Override public double perimeter() { return 2 * (width + height); }
 }
 
 public final class Square extends Rectangle {
     public Square(double side) { super(side, side); }
+
+    public double side() { return width(); }
 }
 
 // Option 3: non-sealed — reopens the hierarchy
@@ -96,6 +103,10 @@ public non-sealed class Triangle extends Shape {
         this.height = height;
         this.hypotenuse = hypotenuse;
     }
+
+    public double base() { return base; }
+    public double height() { return height; }
+    public double hypotenuse() { return hypotenuse; }
 
     @Override public double area() { return 0.5 * base * height; }
     @Override public double perimeter() { return base + height + hypotenuse; }
@@ -149,11 +160,12 @@ The killer feature of sealed classes is **exhaustiveness checking** in `switch` 
 
 ```java
 // With sealed hierarchy — NO default needed, compiler checks exhaustiveness!
+// Note: Square extends Rectangle, so Square must appear before Rectangle
 double area(Shape shape) {
     return switch (shape) {
         case Circle c    -> Math.PI * c.radius() * c.radius();
+        case Square s    -> s.side() * s.side();      // Square before Rectangle (more specific)
         case Rectangle r -> r.width() * r.height();
-        case Square s    -> s.side() * s.side();
         case Triangle t  -> 0.5 * t.base() * t.height();
     };
 }

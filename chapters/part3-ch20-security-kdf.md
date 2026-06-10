@@ -59,13 +59,12 @@ public class HkdfExample {
             throws Exception {
         KDF hkdf = KDF.getInstance("HKDF-SHA256");
 
-        HKDFParameterSpec spec = HKDFParameterSpec.expandOnly(
-            // First run extract to get a pseudorandom key (PRK)
-            HKDFParameterSpec.ofExtract()
-                .addIKM(inputKeyMaterial)
-                .addSalt(salt)
-                .extractExpand(info, AES_256_KEY_SIZE)
-        );
+        // extractExpand() chains Extract (from IKM + salt) then Expand (with info)
+        // in a single spec — this is the standard full HKDF operation
+        HKDFParameterSpec spec = HKDFParameterSpec.ofExtract()
+            .addIKM(inputKeyMaterial)
+            .addSalt(salt)
+            .extractExpand(info, AES_256_KEY_SIZE);
 
         return hkdf.deriveKey("AES", spec);
     }
@@ -96,12 +95,12 @@ public class HkdfExample {
 
         // Derive HMAC key for authentication
         byte[] hmacInfo = "authentication-key-v1".getBytes();
-        KDF hkdf = KDF.getInstance("HKDF-SHA256");
-        HKDFParameterSpec hmacSpec = HKDFParameterSpec.expandOnly(
-            HKDFParameterSpec.ofExtract().addIKM(sharedSecret).addSalt(salt)
-                .extractExpand(hmacInfo, 32)
-        );
-        SecretKey hmacKey = hkdf.deriveKey("HmacSHA256", hmacSpec);
+        KDF hkdf2 = KDF.getInstance("HKDF-SHA256");
+        HKDFParameterSpec hmacSpec = HKDFParameterSpec.ofExtract()
+            .addIKM(sharedSecret)
+            .addSalt(salt)
+            .extractExpand(hmacInfo, 32);
+        SecretKey hmacKey = hkdf2.deriveKey("HmacSHA256", hmacSpec);
         System.out.println("HMAC key: " + hmacKey.getAlgorithm());
     }
 }

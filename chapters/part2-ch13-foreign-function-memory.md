@@ -1,6 +1,8 @@
 # Chapter 13: Foreign Function and Memory API
 
-The Foreign Function and Memory API (JEP 454, finalized in Java 21) is the result of Project Panama — a multi-year effort to replace JNI with a safer, more expressive API for calling native code and manipulating native memory. If you've ever wrestled with JNI boilerplate, hand-written C header files, or unsafe `Unsafe` usage, FFM API is the modern solution.
+The Foreign Function and Memory API (JEP 454, finalized in **Java 22**; 3rd preview JEP 442 in Java 21) is the result of Project Panama — a multi-year effort to replace JNI with a safer, more expressive API for calling native code and manipulating native memory. If you've ever wrestled with JNI boilerplate, hand-written C header files, or unsafe `Unsafe` usage, FFM API is the modern solution.
+
+> **Note**: The code examples in this chapter use `findOrThrow()` and `Arena.allocateFrom(String)`, both of which are Java 22+ APIs. In Java 21 (preview), use `find("name").orElseThrow()` and `arena.allocateUtf8String("text")` respectively.
 
 ---
 
@@ -140,7 +142,7 @@ public class NativeStringLength {
     private static final MethodHandle STRLEN;
     static {
         STRLEN = LINKER.downcallHandle(
-            STDLIB.findOrThrow("strlen"),
+            STDLIB.find("strlen").orElseThrow(),  // Java 21 API (findOrThrow is Java 22+)
             FunctionDescriptor.of(
                 ValueLayout.JAVA_LONG,   // return type: size_t (long on 64-bit)
                 ValueLayout.ADDRESS      // parameter: const char*
@@ -150,7 +152,9 @@ public class NativeStringLength {
 
     public static long strlen(String s) throws Throwable {
         try (Arena arena = Arena.ofConfined()) {
-            // Convert Java String to C string (null-terminated)
+            // Convert Java String to null-terminated C string
+            // Java 21: arena.allocateUtf8String(s)
+            // Java 22+: arena.allocateFrom(s)   ← preferred in Java 22+
             MemorySegment cString = arena.allocateFrom(s);
             return (long) STRLEN.invokeExact(cString);
         }
@@ -191,7 +195,7 @@ public class TimeExample {
 
     // clock_gettime(clockid_t, struct timespec*) -> int
     static final MethodHandle CLOCK_GETTIME = LINKER.downcallHandle(
-        STDLIB.findOrThrow("clock_gettime"),
+        STDLIB.find("clock_gettime").orElseThrow(),  // Java 21; Java 22+ use findOrThrow()
         FunctionDescriptor.of(
             ValueLayout.JAVA_INT,
             ValueLayout.JAVA_INT,
@@ -230,7 +234,7 @@ SymbolLookup mathLib = SymbolLookup.libraryLookup("m", Arena.ofAuto()); // libm
 
 // double pow(double base, double exp)
 MethodHandle POW = LINKER.downcallHandle(
-    mathLib.findOrThrow("pow"),
+    mathLib.find("pow").orElseThrow(),  // Java 21; Java 22+ use findOrThrow()
     FunctionDescriptor.of(
         ValueLayout.JAVA_DOUBLE,
         ValueLayout.JAVA_DOUBLE,
@@ -287,7 +291,7 @@ public class QSortExample {
 
             // void qsort(void* base, size_t nmemb, size_t size, comparator)
             MethodHandle QSORT = LINKER.downcallHandle(
-                STDLIB.findOrThrow("qsort"),
+                STDLIB.find("qsort").orElseThrow(),  // Java 21; Java 22+ use findOrThrow()
                 FunctionDescriptor.ofVoid(
                     ValueLayout.ADDRESS,
                     ValueLayout.JAVA_LONG,

@@ -142,14 +142,14 @@ for (var _ : collection) {
 sealed interface Shape permits Circle, Rectangle, Triangle {}
 record Circle(double radius) implements Shape {}
 record Rectangle(double width, double height) implements Shape {}
-record Triangle(double base, double height, double hyp) implements Shape {}
+record Triangle(double base, double height) implements Shape {}  // consistent with Ch5
 
 // Ignore components you don't need with _
 String quickDescribe(Shape shape) {
     return switch (shape) {
-        case Circle(double r)            -> "circle r=" + r;
+        case Circle(double r)              -> "circle r=" + r;
         case Rectangle(double w, double h) -> "rectangle " + w + "×" + h;
-        case Triangle(double b, var _, var _) -> "triangle base=" + b; // ignore h and hyp
+        case Triangle(double b, var _)     -> "triangle base=" + b; // ignore height with _
     };
 }
 ```

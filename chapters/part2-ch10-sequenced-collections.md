@@ -84,7 +84,7 @@ for (SequencedCollection<String> coll : List.of(list, deque, linked)) {
 
 ```java
 List<Integer> numbers = new ArrayList<>(List.of(1, 2, 3, 4, 5));
-List<Integer> reversed = (List<Integer>) numbers.reversed();
+List<Integer> reversed = numbers.reversed(); // List.reversed() returns List<E> — no cast needed
 
 System.out.println(reversed.getFirst()); // 5
 System.out.println(reversed.getLast());  // 1
@@ -214,14 +214,14 @@ System.out.println("Top scorer: " + topScorer); // Alice
 | Collection | Implements | Notes |
 |-----------|-----------|-------|
 | `ArrayList` | `SequencedCollection` | `addFirst`/`addLast` are O(n)/O(1) |
-| `LinkedList` | `SequencedCollection`, `SequencedSet` if used as Deque | All ops O(1) |
+| `LinkedList` | `SequencedCollection` (also `Deque`) | All ops O(1) |
 | `ArrayDeque` | `SequencedCollection` | All ops O(1) |
 | `LinkedHashSet` | `SequencedSet` | Insertion-order set |
 | `TreeSet` | `SequencedSet` | Sorted-order set |
 | `LinkedHashMap` | `SequencedMap` | Insertion-order map |
 | `TreeMap` | `SequencedMap` | Sorted-order map |
 
-**Not implementing**: `HashSet`, `HashMap`, `ArrayList` (for `SequencedSet`) — unordered collections do not implement these interfaces.
+**Not implementing `SequencedSet`**: `LinkedList` (allows duplicates, not a `Set`), `ArrayList`, `ArrayDeque`, `HashSet`, `HashMap` — only true ordered sets implement `SequencedSet`.
 
 ---
 

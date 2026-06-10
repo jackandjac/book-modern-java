@@ -91,11 +91,13 @@ String b = """
 """;
 // Result: "        Hello\n        World\n"
 
-// Case 3: closing """ inline with content
+// Case 3: closing """ inline with content (after last content character)
 String c = """
         Hello
         World""";
-// Result: "        Hello\n        World"  (no trailing newline!)
+// Result: "Hello\nWorld"  (no trailing newline, and NO leading spaces —
+// the closing """ position is at column 8, matching the content indentation,
+// so all 8 leading spaces are still stripped)
 ```
 
 The practical pattern: **put the closing `"""` on its own line, indented to the same level as the content**. This gives you clean, unpadded content:

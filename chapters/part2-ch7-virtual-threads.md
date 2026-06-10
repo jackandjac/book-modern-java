@@ -119,8 +119,12 @@ Unmounting happens automatically when a virtual thread calls:
 // Demonstration of unmounting
 Thread.ofVirtual().start(() -> {
     System.out.println("Before sleep: " + Thread.currentThread()); // mounted
-    Thread.sleep(1000);   // unmounts — carrier thread is free during this second
-    System.out.println("After sleep: " + Thread.currentThread());  // remounted, possibly different carrier
+    try {
+        Thread.sleep(1000); // unmounts — carrier thread is free during this second
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+    System.out.println("After sleep: " + Thread.currentThread()); // remounted, possibly different carrier
 });
 ```
 
@@ -207,7 +211,7 @@ public class Counter {
         count++;  // fine — no blocking here
     }
 
-    public synchronized int getAndReset() {
+    public synchronized int getAndReset() throws InterruptedException {
         Thread.sleep(100);  // PINNING: holds carrier thread for 100ms!
         int val = count;
         count = 0;
@@ -229,7 +233,7 @@ public class BetterCounter {
         }
     }
 
-    public int getAndReset() {
+    public int getAndReset() throws InterruptedException {
         lock.lock();
         try {
             Thread.sleep(100);  // NOT pinned — virtual thread can unmount

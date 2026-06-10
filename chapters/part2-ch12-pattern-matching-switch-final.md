@@ -78,14 +78,15 @@ String describe(Object obj) {
         case null         -> "null value";
         case Integer i    -> "integer: " + i;
         case String s     -> "string: " + s;
-        case default      -> "other: " + obj;
+        default           -> "other: " + obj;  // 'default', not 'case default'
     };
 }
 
-// Combine null with another case
+// Combine null with default (valid — case null can share a label with default)
 String process(String input) {
     return switch (input) {
-        case null, ""     -> "empty or null";
+        case null         -> "null";           // null must be its own case label
+        case ""           -> "empty";          // constant string is a separate case
         case String s when s.length() > 100 -> "very long: " + s.substring(0, 20) + "...";
         case String s     -> "normal: " + s;
     };
@@ -156,7 +157,7 @@ record Sub(Expr left, Expr right)    implements Expr {}
 record Mul(Expr left, Expr right)    implements Expr {}
 record Div(Expr left, Expr right)    implements Expr {}
 record Neg(Expr expr)                implements Expr {}
-record Let(String var, Expr value, Expr body) implements Expr {}
+record Let(String varName, Expr value, Expr body) implements Expr {}
 
 // Evaluator
 static double eval(Expr expr, Map<String, Double> env) {
@@ -176,9 +177,11 @@ static double eval(Expr expr, Map<String, Double> env) {
             yield eval(l, env) / divisor;
         }
         case Neg(Expr inner)               -> -eval(inner, env);
-        case Let(String var, Expr val, Expr body) -> {
+        case Let(String varName, Expr val, Expr body) -> {
+            // 'var' is a context-sensitive keyword — safe as a record field name,
+            // but naming it 'varName' here avoids confusion with the 'var' type-inference keyword
             var newEnv = new HashMap<>(env);
-            newEnv.put(var, eval(val, env));
+            newEnv.put(varName, eval(val, env));
             yield eval(body, newEnv);
         }
     };
@@ -194,8 +197,8 @@ static String prettyPrint(Expr expr) {
         case Sub(Expr l, Expr r)        -> "(" + prettyPrint(l) + " - " + prettyPrint(r) + ")";
         case Mul(Expr l, Expr r)        -> "(" + prettyPrint(l) + " * " + prettyPrint(r) + ")";
         case Div(Expr l, Expr r)        -> "(" + prettyPrint(l) + " / " + prettyPrint(r) + ")";
-        case Let(String v, Expr val, Expr body) ->
-            "let " + v + " = " + prettyPrint(val) + " in " + prettyPrint(body);
+        case Let(String varName, Expr val, Expr body) ->
+            "let " + varName + " = " + prettyPrint(val) + " in " + prettyPrint(body);
     };
 }
 ```

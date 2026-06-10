@@ -31,8 +31,8 @@ public final class ScopedValue<T> {
     public static <T> Carrier where(ScopedValue<T> key, T value);
 
     // Reading
-    public T get();                   // throws NoSuchElementException if not bound
-    public Optional<T> orElse(T other); // returns other if not bound (wait — see below)
+    public T get();              // throws NoSuchElementException if not bound
+    public T orElse(T other);    // returns `other` if not bound (does NOT throw)
     public boolean isBound();
 
     // Carrier (binding builder) class
@@ -43,13 +43,6 @@ public final class ScopedValue<T> {
     }
 }
 ```
-
-One important API note on `orElse()`: the method signature is actually:
-```java
-public T orElse(T other);
-```
-
-If the scoped value is not bound in the current scope, it returns `other` instead of throwing.
 
 ---
 

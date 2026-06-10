@@ -19,7 +19,7 @@
 | 409 | Sealed Classes | ✅ Final | 2 | Restrict class/interface inheritance with permits clause |
 | 410 | Remove Experimental AOT and JIT Compiler | Removal | 6 | jaotc and Graal JIT removed from JDK |
 | 411 | Deprecate Security Manager for Removal | Deprecated | 6 | Security Manager deprecated; removed in Java 24 |
-| 412 | Foreign Function & Memory API | 1st Incubator | 13 | Access native code and memory (finalized in Java 21) |
+| 412 | Foreign Function & Memory API | 1st Incubator | 13 | Access native code and memory (finalized in Java 22 as JEP 454) |
 | 414 | Vector API | 2nd Incubator | 21 | SIMD operations from Java |
 | 415 | Context-Specific Deserialization Filters | ✅ Final | 6 | JVM-wide filter factory for ObjectInputStream |
 
@@ -34,7 +34,7 @@
 | 439 | Generational ZGC | ✅ Final | 14 | Young/old generation support in ZGC |
 | 440 | Record Patterns | ✅ Final | 11 | Destructure record components in patterns |
 | 441 | Pattern Matching for switch | ✅ Final | 12 | Type patterns, guarded patterns, null handling in switch |
-| 442 | Foreign Function & Memory API | 3rd Preview → Final | 13 | Access native functions and memory (finalized in Java 22) |
+| 442 | Foreign Function & Memory API | 3rd Preview | 13 | Access native functions and memory (preview in Java 21; finalized in Java 22 as JEP 454) |
 | 443 | Unnamed Patterns and Variables | 1st Preview | 14 | _ wildcard in patterns and variables |
 | 444 | Virtual Threads | ✅ Final | 7 | JVM-managed lightweight threads for I/O scalability |
 | 445 | Unnamed Classes and Instance Main Methods | 1st Preview | 18 | Reduce ceremony for simple programs |
@@ -44,7 +44,7 @@
 | 451 | Prepare to Disallow the Dynamic Loading of Agents | Warning | — | JVM warns when agents loaded into running JVM |
 | 452 | Key Encapsulation Mechanism API | ✅ Final | 20 | javax.crypto.KEM for post-quantum cryptography |
 | 453 | Structured Concurrency | 1st Preview | 8 | Structured task lifetime management (evolving toward Java 27) |
-| 454 | Foreign Function & Memory API | ✅ Final | 13 | Finalized in Java 21 |
+| 454 | Foreign Function & Memory API | ✅ Final | 13 | Finalized in **Java 22** (not Java 21 — common mistake) |
 
 ---
 

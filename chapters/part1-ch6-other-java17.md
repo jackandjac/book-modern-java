@@ -124,12 +124,15 @@ import java.util.random.RandomGenerator.JumpableGenerator;
 JumpableGenerator jumpable =
     (JumpableGenerator) RandomGeneratorFactory.of("Xoshiro256PlusPlus").create();
 
-// Each jump() creates a copy advanced by 2^128 steps — guaranteed non-overlapping
+// copyAndJump() returns a copy of the current state, then advances the original
+// by 2^128 steps — guaranteed non-overlapping sequences
 JumpableGenerator thread1Gen = jumpable;
-JumpableGenerator thread2Gen = (JumpableGenerator) jumpable.jump();
-JumpableGenerator thread3Gen = (JumpableGenerator) jumpable.jump();
+JumpableGenerator thread2Gen = (JumpableGenerator) jumpable.copyAndJump();
+JumpableGenerator thread3Gen = (JumpableGenerator) jumpable.copyAndJump();
 // thread1Gen, thread2Gen, thread3Gen produce sequences that will never overlap
 // (each sequence is 2^128 values long, more than sufficient for any simulation)
+// Note: jump() is void and advances the generator in place; copyAndJump() is
+// the idiomatic way to obtain independent generators.
 ```
 
 ### Practical Migration
@@ -337,9 +340,9 @@ public class ApplicationFilterFactory {
 
 ## 6.5 Deprecations and Removals
 
-### Removed: Applet API (JEP 398)
+### Deprecated for Removal: Applet API (JEP 398)
 
-The `java.applet` package and related browser plugin infrastructure are formally deprecated for removal. Applets have been effectively dead since browser vendors dropped NPAPI plugin support. Any code using `java.applet.Applet`, `java.applet.AppletContext`, etc., must be rewritten.
+The `java.applet` package and related browser plugin infrastructure are formally **deprecated for removal** in Java 17 (not yet removed — the physical removal followed in Java 23 via JEP 462). Applets have been effectively dead since browser vendors dropped NPAPI plugin support. Any code using `java.applet.Applet`, `java.applet.AppletContext`, etc., must be rewritten.
 
 ### Removed: RMI Activation (JEP 407)
 

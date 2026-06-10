@@ -102,13 +102,13 @@ Record patterns work in switch expressions and statements — this is where they
 sealed interface Shape permits Circle, Rectangle, Triangle {}
 record Circle(double radius) implements Shape {}
 record Rectangle(double width, double height) implements Shape {}
-record Triangle(double base, double height, double hypotenuse) implements Shape {}
+record Triangle(double base, double height) implements Shape {}  // consistent with Ch5
 
 double area(Shape shape) {
     return switch (shape) {
-        case Circle(double r)                  -> Math.PI * r * r;
-        case Rectangle(double w, double h)     -> w * h;
-        case Triangle(double b, double h, var _) -> 0.5 * b * h;
+        case Circle(double r)              -> Math.PI * r * r;
+        case Rectangle(double w, double h) -> w * h;
+        case Triangle(double b, double h)  -> 0.5 * b * h;
     };
 }
 
@@ -119,7 +119,7 @@ String describe(Shape shape) {
         case Rectangle(double w, double h)
             when w == h                     -> "square (" + w + "x" + h + ")";
         case Rectangle(double w, double h)  -> "rectangle (" + w + "x" + h + ")";
-        case Triangle(var b, var h, var hyp) -> "triangle";
+        case Triangle(var b, var h)         -> "triangle";
     };
 }
 ```
@@ -150,14 +150,18 @@ double eval(Expr expr, Map<String, Double> env) {
 }
 
 // Constant-fold optimization: Mul(Num(0), anything) = Num(0)
+// NOTE: Java 21 record patterns do NOT support constant patterns (e.g., Num(0.0)).
+// Constant patterns (matching specific values inside record deconstruction) are a
+// future feature (JEP 507, 3rd preview in Java 25). In Java 21, use guarded patterns
+// with `when` to achieve the same logic:
 Expr simplify(Expr expr) {
     return switch (expr) {
-        case Mul(Num(0.0), var _)     -> new Num(0);
-        case Mul(var _, Num(0.0))     -> new Num(0);
-        case Mul(Num(1.0), Expr e)    -> simplify(e);
-        case Mul(Expr e, Num(1.0))    -> simplify(e);
-        case Add(Num(0.0), Expr e)    -> simplify(e);
-        case Add(Expr e, Num(0.0))    -> simplify(e);
+        case Mul(Num n, var _)  when n.value() == 0.0 -> new Num(0);
+        case Mul(var _, Num n)  when n.value() == 0.0 -> new Num(0);
+        case Mul(Num n, Expr e) when n.value() == 1.0 -> simplify(e);
+        case Mul(Expr e, Num n) when n.value() == 1.0 -> simplify(e);
+        case Add(Num n, Expr e) when n.value() == 0.0 -> simplify(e);
+        case Add(Expr e, Num n) when n.value() == 0.0 -> simplify(e);
         case Add(Expr l, Expr r)      -> new Add(simplify(l), simplify(r));
         case Mul(Expr l, Expr r)      -> new Mul(simplify(l), simplify(r));
         case Neg(Neg(Expr inner))     -> simplify(inner);  // double negation
